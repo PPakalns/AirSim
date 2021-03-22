@@ -81,12 +81,12 @@ if [[ ! -d $build_dir ]]; then
 
     if $debug; then
         folder_name="Debug"
-        "$CMAKE" ../cmake -DCMAKE_BUILD_TYPE=Debug \
+        "$CMAKE" ../cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             || (popd && rm -r $build_dir && exit 1)
         popd >/dev/null
     else
         folder_name="Release"
-        "$CMAKE" ../cmake -DCMAKE_BUILD_TYPE=Release \
+        "$CMAKE" ../cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
             || (popd && rm -r $build_dir && exit 1)
         popd >/dev/null
     fi
