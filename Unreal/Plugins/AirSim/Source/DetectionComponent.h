@@ -65,4 +65,6 @@ private:
 
 	UPROPERTY()
 		TArray<FDetectionInfo> CachedDetections;
+
+    mutable FCriticalSection CachedDetectionsMutex;
 };

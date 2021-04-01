@@ -37,7 +37,7 @@ void UDetectionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	CachedDetections.Empty();
+    TArray<FDetectionInfo> NewDetections;
 
 	for (TActorIterator<AActor> ActorItr(GetWorld()); ActorItr; ++ActorItr)
 	{
@@ -58,7 +58,7 @@ void UDetectionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 
 					Detection.RelativeTransform = FTransform(GetRelativeRotation(Actor->GetActorLocation(), Actor->GetActorRotation()),
 						GetRelativeLocation(Actor->GetActorLocation()));
-					CachedDetections.Add(Detection);
+					NewDetections.Add(Detection);
 
 					/*  ---Debug only---
 					FVector Origin;
@@ -68,12 +68,16 @@ void UDetectionComponent::TickComponent(float DeltaTime, ELevelTick TickType, FA
 						---------------- */
 				}
 			}
-		}		
+		}
 	}
+
+    FScopeLock CachedDetectionScopeLock(&CachedDetectionsMutex);
+    CachedDetections = std::move(NewDetections);
 }
 
 TArray<FDetectionInfo> UDetectionComponent::GetDetections() const
 {
+    FScopeLock CachedDetectionScopeLock(&CachedDetectionsMutex);
 	return CachedDetections;
 }
 
